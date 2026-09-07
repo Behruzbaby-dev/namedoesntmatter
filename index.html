@@ -1,491 +1,208 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Certificates | Teacher S. MA'MUROV</title>
+    <title>Upload Portal</title>
     <style>
-        :root {
-            --bg: #f8fafc;
-            --text: #0f172a;
-            --card-bg: #ffffff;
-            --header-bg: linear-gradient(135deg, #1e293b, #0f172a);
-            --header-text: #ffffff;
-            --header-border: #334155;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --danger: #ef4444;
-            --danger-hover: #dc2626;
-            --input-border: #cbd5e1;
-            --input-bg: #ffffff;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
-        [data-theme="dark"] {
-            --bg: #0f172a;
-            --text: #f8fafc;
-            --card-bg: #1e293b;
-            --header-bg: linear-gradient(135deg, #020617, #0f172a);
-            --header-text: #ffffff;
-            --header-border: #1e293b;
-            --primary: #3b82f6;
-            --primary-hover: #60a5fa;
-            --danger: #ef4444;
-            --danger-hover: #f87171;
-            --input-border: #475569;
-            --input-bg: #0f172a;
+        /* Authorization Screen Styles */
+        #auth-screen {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-
-        body { background-color: var(--bg); color: var(--text); transition: background-color 0.3s, color 0.3s; min-height: 100vh; display: flex; flex-direction: column; }
-
-        header {
-            display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem;
-            background: var(--header-bg); border-bottom: 2px solid var(--header-border);
-            color: var(--header-text);
-            position: sticky; top: 0; z-index: 10;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        #auth-screen h2 {
+            margin-top: 0;
+            color: #333;
         }
 
-        .teacher-name { 
-            font-size: 1.5rem; font-weight: 800; letter-spacing: 1px; 
-            text-transform: uppercase;
-            background: linear-gradient(to right, #60a5fa, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
         }
 
-        .header-actions { display: flex; gap: 1rem; align-items: center; }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #666;
+        }
 
-        .theme-toggle { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 40px; height: 40px; color: var(--header-text); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .theme-toggle:hover { transform: scale(1.1); background: rgba(255,255,255,0.2); }
+        .input-group input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
 
-        .public-link {
-            color: var(--header-text); text-decoration: none; font-weight: 600; font-size: 0.9rem;
-            padding: 0.5rem 1rem; border-radius: 8px; background: rgba(255,255,255,0.1);
-            transition: background 0.2s;
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #555;
         }
-        .public-link:hover { background: rgba(255,255,255,0.2); }
 
-        main { flex: 1; padding: 2rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .checkbox-group input {
+            margin-right: 8px;
+        }
 
-        .tabs { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid var(--input-border); padding-bottom: 0.5rem; }
-        .tab { 
-            background: none; border: none; color: var(--text); font-size: 1.1rem; font-weight: 600; 
-            cursor: pointer; padding: 0.5rem 1rem; opacity: 0.6; transition: opacity 0.2s;
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
         }
-        .tab.active { opacity: 1; border-bottom: 3px solid var(--primary); margin-bottom: -0.65rem; }
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        button:hover {
+            background-color: #0056b3;
+        }
 
-        /* Form Styles */
-        .form-container {
-            background: var(--card-bg); padding: 2rem; border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            max-width: 500px; margin: 0 auto;
+        .error-msg {
+            color: red;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
         }
-        
-        .form-group { margin-bottom: 1.2rem; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.95rem; }
-        input, select {
-            width: 100%; padding: 0.75rem; border: 1px solid var(--input-border);
-            border-radius: 8px; background-color: var(--input-bg); color: var(--text);
-            font-size: 1rem;
-        }
-        
-        button[type="submit"], .btn-primary {
-            width: 100%; padding: 0.85rem; background: var(--primary); color: #fff;
-            border: none; border-radius: 8px; font-size: 1rem; font-weight: 600;
-            cursor: pointer; margin-top: 1rem; transition: background 0.2s; text-align: center;
-        }
-        button[type="submit"]:hover, .btn-primary:hover { background: var(--primary-hover); }
-        button:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        /* List Styles */
-        .list-container {
-            background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+        /* Upload Screen Styles (Hidden by default) */
+        #upload-screen {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
         }
-        .list-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 1.5rem; border-bottom: 1px solid var(--input-border);
-        }
-        .list-item:last-child { border-bottom: none; }
-        .list-item-info { display: flex; align-items: center; gap: 1rem; }
-        .list-item-img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
-        .list-item-details strong { display: block; font-size: 1.1rem; }
-        .list-item-details span { font-size: 0.85rem; opacity: 0.8; }
-        
-        .btn-danger {
-            background: var(--danger); color: white; border: none; padding: 0.5rem 1rem;
-            border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;
-        }
-        .btn-danger:hover { background: var(--danger-hover); }
 
-        .loader { text-align: center; padding: 2rem; font-weight: 500; }
-        
-        /* Edit Modal */
-        .edit-modal {
-            display: none; position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.6); z-index: 1000;
-            justify-content: center; align-items: center; padding: 1rem;
+        .logout-btn {
+            background-color: #dc3545;
+            margin-top: 20px;
         }
-        .edit-modal.show { display: flex; }
-        .edit-content {
-            background: var(--card-bg); padding: 2rem; border-radius: 12px; width: 100%; max-width: 500px;
-            max-height: 90vh; overflow-y: auto;
+
+        .logout-btn:hover {
+            background-color: #c82333;
         }
-        .edit-header { display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: center; }
-        .close-btn { background: none; border: none; font-size: 1.5rem; color: var(--text); cursor: pointer; }
-        .btn-edit { background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; margin-right: 0.5rem; font-weight: 600; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="teacher-name">Teacher S. MA'MUROV</div>
-        <div class="header-actions">
-            <a href="index.html" class="public-link">View Public Page</a>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">
-                <span id="themeIcon">🌙</span>
-            </button>
-        </div>
-    </header>
 
-    <main>
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('upload')">Add New</button>
-            <button class="tab" onclick="switchTab('manage')">Manage Existing</button>
+    <!-- Authorization Screen -->
+    <div id="auth-screen">
+        <h2>Secure Login</h2>
+        <div class="error-msg" id="error-msg">Incorrect password. Please try again.</div>
+        
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
         </div>
-
-        <!-- UPLOAD TAB -->
-        <div id="uploadTab" class="tab-content active">
-            <div class="form-container">
-                <h2 style="margin-bottom: 1rem; text-align: center;">Upload Certificate</h2>
-                <form id="uploadForm">
-                    <div class="form-group">
-                        <label>First Name</label>
-                        <input type="text" id="firstName" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Last Name</label>
-                        <input type="text" id="lastName" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Type</label>
-                        <select id="certType" required>
-                            <option value="IELTS">IELTS</option>
-                            <option value="CEFR">CEFR</option>
-                        </select>
-                    </div>
-                    <div class="form-group" id="scoreGroup">
-                        <label>Score (IELTS)</label>
-                        <input type="number" id="scoreInput" step="0.5" min="0" max="9">
-                    </div>
-                    <div class="form-group" id="levelGroup" style="display:none;">
-                        <label>Level (CEFR)</label>
-                        <select id="levelSelect">
-                            <option value="B1">B1</option>
-                            <option value="B2">B2</option>
-                            <option value="C1">C1</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Certificate Photo</label>
-                        <input type="file" id="photo" accept="image/*" required>
-                    </div>
-                    <button type="submit" id="submitBtn">Upload Certificate</button>
-                    <div class="loader" id="uploadLoader" style="display: none;">Uploading...</div>
-                </form>
-            </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="remember-me">
+            <label for="remember-me">Remember me</label>
         </div>
-
-        <!-- MANAGE TAB -->
-        <div id="manageTab" class="tab-content">
-            <div class="list-container" id="certList">
-                <div class="loader" id="listLoader">Loading certificates...</div>
-            </div>
-        </div>
-    </main>
-
-    <!-- EDIT MODAL -->
-    <div class="edit-modal" id="editModal">
-        <div class="edit-content">
-            <div class="edit-header">
-                <h2>Edit Certificate</h2>
-                <button class="close-btn" onclick="closeEditModal()">×</button>
-            </div>
-            <form id="editForm">
-                <input type="hidden" id="editId">
-                <div class="form-group">
-                    <label>First Name</label>
-                    <input type="text" id="editFirstName" required>
-                </div>
-                <div class="form-group">
-                    <label>Last Name</label>
-                    <input type="text" id="editLastName" required>
-                </div>
-                <div class="form-group">
-                    <label>Type</label>
-                    <select id="editCertType" required>
-                        <option value="IELTS">IELTS</option>
-                        <option value="CEFR">CEFR</option>
-                    </select>
-                </div>
-                <div class="form-group" id="editScoreGroup">
-                    <label>Score (IELTS)</label>
-                    <input type="number" id="editScoreInput" step="0.5" min="0" max="9">
-                </div>
-                <div class="form-group" id="editLevelGroup" style="display:none;">
-                    <label>Level (CEFR)</label>
-                    <select id="editLevelSelect">
-                        <option value="B1">B1</option>
-                        <option value="B2">B2</option>
-                        <option value="C1">C1</option>
-                    </select>
-                </div>
-                <button type="submit" id="saveEditBtn" class="btn-primary">Save Changes</button>
-            </form>
-        </div>
+        
+        <button onclick="login()">Login</button>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    <!-- Main Upload Screen -->
+    <div id="upload-screen">
+        <h2>Upload Dashboard</h2>
+        <p>Welcome! You can now upload your files here.</p>
+        
+        <!-- Place your upload logic/form here -->
+        <input type="file" style="margin: 20px 0;">
+        
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
 
-        // Global functions for inline HTML event handlers
-        window.switchTab = function(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    <script>
+        // "Sardor26" reversed is "62rodraS", then encoded to Base64 = "NjJyb2RyYVM="
+        // This keeps the password out of plain text in the source code.
+        const ENCODED_PASS = "NjJyb2RyYVM=";
+
+        // Elements
+        const authScreen = document.getElementById('auth-screen');
+        const uploadScreen = document.getElementById('upload-screen');
+        const passwordInput = document.getElementById('password');
+        const rememberCheckbox = document.getElementById('remember-me');
+        const errorMsg = document.getElementById('error-msg');
+
+        // Check local storage on page load
+        window.onload = function() {
+            if (localStorage.getItem('isAuthorized') === 'true') {
+                showUploadScreen();
+            }
+        };
+
+        function login() {
+            const inputVal = passwordInput.value;
             
-            if(tab === 'upload') {
-                document.querySelectorAll('.tab')[0].classList.add('active');
-                document.getElementById('uploadTab').classList.add('active');
-            } else {
-                document.querySelectorAll('.tab')[1].classList.add('active');
-                document.getElementById('manageTab').classList.add('active');
-            }
-        };
+            // Encode input using the same logic: reverse string -> convert to base64
+            const encodedInput = btoa(inputVal.split('').reverse().join(''));
 
-        window.closeEditModal = function() {
-            document.getElementById('editModal').classList.remove('show');
-        }
-
-        // Theme logic
-        const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
-        const htmlEl = document.documentElement;
-
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        setTheme(currentTheme);
-
-        themeToggle.addEventListener('click', () => {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            setTheme(currentTheme);
-        });
-
-        function setTheme(theme) {
-            htmlEl.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
-        }
-
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyAIpn0b6tQiLRP8YWKslr_N7lb4_siOEbQ",
-            authDomain: "randomproject1-96576.firebaseapp.com",
-            databaseURL: "https://randomproject1-96576-default-rtdb.europe-west1.firebasedatabase.app/",
-            projectId: "randomproject1-96576",
-            storageBucket: "randomproject1-96576.firebasestorage.app",
-            messagingSenderId: "157419919229",
-            appId: "1:157419919229:web:ab34c41270d41cb3021e14"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const certsRef = ref(db, 'certificates');
-
-        // Form Logic (Upload)
-        const certType = document.getElementById('certType');
-        const scoreGroup = document.getElementById('scoreGroup');
-        const levelGroup = document.getElementById('levelGroup');
-        const scoreInput = document.getElementById('scoreInput');
-        const levelSelect = document.getElementById('levelSelect');
-
-        certType.addEventListener('change', (e) => {
-            if (e.target.value === 'IELTS') {
-                scoreGroup.style.display = 'block'; levelGroup.style.display = 'none';
-                scoreInput.required = true; levelSelect.required = false;
-            } else {
-                scoreGroup.style.display = 'none'; levelGroup.style.display = 'block';
-                scoreInput.required = false; levelSelect.required = true;
-            }
-        });
-
-        function resizeImage(file, callback) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800; 
-                    let width = img.width; let height = img.height;
-                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                    canvas.width = width; canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    callback(canvas.toDataURL('image/jpeg', 0.8));
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        document.getElementById('uploadForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const loader = document.getElementById('uploadLoader');
-            btn.disabled = true; loader.style.display = 'block';
-
-            const type = certType.value;
-            let score = ''; let levelCategory = '';
-
-            if (type === 'IELTS') {
-                score = parseFloat(scoreInput.value).toFixed(1);
-                const num = parseFloat(score);
-                if (num >= 7.0) levelCategory = 'C1';
-                else if (num >= 5.5) levelCategory = 'B2';
-                else levelCategory = 'B1';
-            } else {
-                score = levelSelect.value; levelCategory = score;
-            }
-
-            resizeImage(document.getElementById('photo').files[0], (base64) => {
-                const certData = {
-                    firstName: document.getElementById('firstName').value.trim(),
-                    lastName: document.getElementById('lastName').value.trim(),
-                    type, score, levelCategory, photoBase64: base64, timestamp: Date.now()
-                };
-
-                push(certsRef, certData).then(() => {
-                    alert('Uploaded successfully!');
-                    document.getElementById('uploadForm').reset();
-                    window.switchTab('manage');
-                }).finally(() => {
-                    btn.disabled = false; loader.style.display = 'none';
-                });
-            });
-        });
-
-        // Manage Logic (List, Delete, Edit)
-        let currentData = {};
-
-        onValue(certsRef, (snapshot) => {
-            const list = document.getElementById('certList');
-            list.innerHTML = '';
-            currentData = snapshot.val() || {};
-
-            if (Object.keys(currentData).length === 0) {
-                list.innerHTML = '<div class="loader">No certificates found.</div>';
-                return;
-            }
-
-            Object.keys(currentData).forEach(key => {
-                const cert = currentData[key];
-                const item = document.createElement('div');
-                item.className = 'list-item';
+            if (encodedInput === ENCODED_PASS) {
+                // Correct password
+                errorMsg.style.display = 'none';
                 
-                item.innerHTML = `
-                    <div class="list-item-info">
-                        <img src="${cert.photoBase64}" class="list-item-img">
-                        <div class="list-item-details">
-                            <strong>${cert.firstName} ${cert.lastName}</strong>
-                            <span>${cert.type} - ${cert.levelCategory} ${cert.type === 'IELTS' ? '('+cert.score+')' : ''}</span>
-                        </div>
-                    </div>
-                    <div>
-                        <button class="btn-edit" data-id="${key}">Edit</button>
-                        <button class="btn-danger" data-id="${key}">Delete</button>
-                    </div>
-                `;
-                list.appendChild(item);
-            });
-
-            // Attach event listeners for edit and delete
-            document.querySelectorAll('.btn-danger').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    if(confirm('Are you sure you want to delete this certificate?')) {
-                        remove(ref(db, `certificates/${e.target.dataset.id}`));
-                    }
-                });
-            });
-
-            document.querySelectorAll('.btn-edit').forEach(btn => {
-                btn.addEventListener('click', (e) => openEditModal(e.target.dataset.id));
-            });
-        });
-
-        // Edit Form Logic
-        const editCertType = document.getElementById('editCertType');
-        const editScoreGroup = document.getElementById('editScoreGroup');
-        const editLevelGroup = document.getElementById('editLevelGroup');
-        const editScoreInput = document.getElementById('editScoreInput');
-        const editLevelSelect = document.getElementById('editLevelSelect');
-
-        editCertType.addEventListener('change', (e) => {
-            if (e.target.value === 'IELTS') {
-                editScoreGroup.style.display = 'block'; editLevelGroup.style.display = 'none';
-                editScoreInput.required = true; editLevelSelect.required = false;
+                if (rememberCheckbox.checked) {
+                    localStorage.setItem('isAuthorized', 'true');
+                } else {
+                    // Optional: use sessionStorage if you want to remember just for the tab lifetime
+                    sessionStorage.setItem('isAuthorized', 'true'); 
+                }
+                
+                showUploadScreen();
             } else {
-                editScoreGroup.style.display = 'none'; editLevelGroup.style.display = 'block';
-                editScoreInput.required = false; editLevelSelect.required = true;
+                // Incorrect password
+                errorMsg.style.display = 'block';
+                passwordInput.value = ''; // clear input
             }
-        });
-
-        function openEditModal(id) {
-            const cert = currentData[id];
-            document.getElementById('editId').value = id;
-            document.getElementById('editFirstName').value = cert.firstName;
-            document.getElementById('editLastName').value = cert.lastName;
-            document.getElementById('editCertType').value = cert.type;
-            
-            if(cert.type === 'IELTS') {
-                editScoreGroup.style.display = 'block'; editLevelGroup.style.display = 'none';
-                editScoreInput.value = cert.score;
-            } else {
-                editScoreGroup.style.display = 'none'; editLevelGroup.style.display = 'block';
-                editLevelSelect.value = cert.score;
-            }
-            
-            document.getElementById('editModal').classList.add('show');
         }
 
-        document.getElementById('editForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const id = document.getElementById('editId').value;
-            const type = editCertType.value;
-            let score = ''; let levelCategory = '';
+        function logout() {
+            // Clear storage and reset UI
+            localStorage.removeItem('isAuthorized');
+            sessionStorage.removeItem('isAuthorized');
+            passwordInput.value = '';
+            rememberCheckbox.checked = false;
+            
+            uploadScreen.style.display = 'none';
+            authScreen.style.display = 'block';
+        }
 
-            if (type === 'IELTS') {
-                score = parseFloat(editScoreInput.value).toFixed(1);
-                const num = parseFloat(score);
-                if (num >= 7.0) levelCategory = 'C1';
-                else if (num >= 5.5) levelCategory = 'B2';
-                else levelCategory = 'B1';
-            } else {
-                score = editLevelSelect.value; levelCategory = score;
+        function showUploadScreen() {
+            authScreen.style.display = 'none';
+            uploadScreen.style.display = 'block';
+        }
+
+        // Allow pressing "Enter" to submit password
+        passwordInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                login();
             }
-
-            const updates = {
-                firstName: document.getElementById('editFirstName').value.trim(),
-                lastName: document.getElementById('editLastName').value.trim(),
-                type, score, levelCategory
-            };
-
-            update(ref(db, `certificates/${id}`), updates).then(() => {
-                window.closeEditModal();
-            });
         });
-
     </script>
 </body>
 </html>
